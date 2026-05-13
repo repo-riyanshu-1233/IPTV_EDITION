@@ -17,15 +17,10 @@
 
 <div class="container">
 
-  <input
-    type="text"
-    id="playlistUrl"
-    placeholder="Paste M3U Playlist URL"
-  >
-
-  <button onclick="loadPlaylist()">
-    Load Playlist
-  </button>
+  <input type="file" id="fileInput" accept=".m3u">
+<button onclick="loadM3UFile()">
+  Load Playlist
+</button>
 
   <div id="channelList"></div>
 
