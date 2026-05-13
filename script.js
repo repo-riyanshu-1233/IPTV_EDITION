@@ -9,8 +9,9 @@ async function loadPlaylist(){
 
   try{
 
-    const response = await fetch(playlistUrl);
-    const text = await response.text();
+    const response = await fetch(
+  'https://corsproxy.io/?' + encodeURIComponent(playlistUrl)
+);
 
     const lines = text.split('\n');
 
