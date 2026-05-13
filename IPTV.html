@@ -1,0 +1,106 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPTV Player</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <style>
+    body{
+      margin:0;
+      background:#111;
+      color:white;
+      font-family:Arial;
+    }
+
+    header{
+      padding:15px;
+      background:#1e1e1e;
+      text-align:center;
+      font-size:24px;
+      font-weight:bold;
+    }
+
+    .container{
+      padding:15px;
+    }
+
+    input{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      margin-bottom:15px;
+      font-size:16px;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      background:#ff004f;
+      color:white;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    video{
+      width:100%;
+      margin-top:20px;
+      border-radius:15px;
+      background:black;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  IPTV Player
+</header>
+
+<div class="container">
+
+  <input 
+    type="text" 
+    id="videoUrl" 
+    placeholder="Paste M3U8 Stream URL Here"
+  >
+
+  <button onclick="playVideo()">
+    Play Stream
+  </button>
+
+  <video id="video" controls autoplay></video>
+
+</div>
+
+<script>
+function playVideo(){
+
+  const video = document.getElementById('video');
+  const videoSrc = document.getElementById('videoUrl').value;
+
+  if(Hls.isSupported()){
+
+    const hls = new Hls();
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+
+  }else if(video.canPlayType('application/vnd.apple.mpegurl')){
+
+    video.src = videoSrc;
+
+  }else{
+
+    alert("HLS not supported");
+
+  }
+}
+</script>
+
+</body>
+</html>
