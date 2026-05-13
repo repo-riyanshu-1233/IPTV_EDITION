@@ -9,9 +9,14 @@ async function loadPlaylist(){
 
   try{
 
+    const proxy =
+      "https://api.allorigins.win/raw?url=";
+
     const response = await fetch(
-  'https://corsproxy.io/?' + encodeURIComponent(playlistUrl)
-);
+      proxy + encodeURIComponent(playlistUrl)
+    );
+
+    const text = await response.text();
 
     const lines = text.split('\n');
 
@@ -21,10 +26,14 @@ async function loadPlaylist(){
 
       if(lines[i].startsWith('#EXTINF')){
 
-        const channelName = lines[i].split(',')[1];
-        const streamUrl = lines[i + 1];
+        const channelName =
+          lines[i].split(',')[1];
 
-        const div = document.createElement('div');
+        const streamUrl =
+          lines[i + 1];
+
+        const div =
+          document.createElement('div');
 
         div.className = 'channel';
         div.innerText = channelName;
@@ -39,7 +48,9 @@ async function loadPlaylist(){
 
   }catch(error){
 
-    channelList.innerHTML = "Failed to load playlist";
+    channelList.innerHTML =
+      "Playlist failed to load";
+
     console.log(error);
 
   }
@@ -50,10 +61,15 @@ function playStream(streamUrl){
   if(Hls.isSupported()){
 
     const hls = new Hls();
+
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
 
-  }else if(video.canPlayType('application/vnd.apple.mpegurl')){
+  }else if(
+    video.canPlayType(
+      'application/vnd.apple.mpegurl'
+    )
+  ){
 
     video.src = streamUrl;
 
