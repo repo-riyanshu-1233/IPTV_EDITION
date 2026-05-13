@@ -1,58 +1,62 @@
 const video = document.getElementById('video');
 
-async function loadPlaylist(){
+function loadM3UFile(){
 
-  const playlistUrl = document.getElementById('playlistUrl').value;
-  const channelList = document.getElementById('channelList');
+  const file =
+    document.getElementById('fileInput').files[0];
 
-  channelList.innerHTML = "Loading channels...";
+  if(!file){
 
-  try{
+    alert("Select M3U file");
 
-    const proxy =
-      "https://api.allorigins.win/raw?url=";
+    return;
+  }
 
-    const response = await fetch(
-      proxy + encodeURIComponent(playlistUrl)
-    );
+  const reader = new FileReader();
 
-    const text = await response.text();
+  reader.onload = function(e){
 
-    const lines = text.split('\n');
+    parsePlaylist(e.target.result);
 
-    channelList.innerHTML = "";
+  };
 
-    for(let i = 0; i < lines.length; i++){
+  reader.readAsText(file);
+}
 
-      if(lines[i].startsWith('#EXTINF')){
+function parsePlaylist(text){
 
-        const channelName =
-          lines[i].split(',')[1];
+  const lines = text.split('\n');
 
-        const streamUrl =
-          lines[i + 1];
+  const channelList =
+    document.getElementById('channelList');
 
-        const div =
-          document.createElement('div');
+  channelList.innerHTML = "";
 
-        div.className = 'channel';
-        div.innerText = channelName;
+  for(let i = 0; i < lines.length; i++){
 
-        div.onclick = () => {
-          playStream(streamUrl);
-        };
+    if(lines[i].startsWith('#EXTINF')){
 
-        channelList.appendChild(div);
-      }
+      const channelName =
+        lines[i].split(',')[1];
+
+      const streamUrl =
+        lines[i + 1];
+
+      const div =
+        document.createElement('div');
+
+      div.className = 'channel';
+
+      div.innerText = channelName;
+
+      div.onclick = () => {
+
+        playStream(streamUrl);
+
+      };
+
+      channelList.appendChild(div);
     }
-
-  }catch(error){
-
-    channelList.innerHTML =
-      "Playlist failed to load";
-
-    console.log(error);
-
   }
 }
 
@@ -63,19 +67,12 @@ function playStream(streamUrl){
     const hls = new Hls();
 
     hls.loadSource(streamUrl);
+
     hls.attachMedia(video);
-
-  }else if(
-    video.canPlayType(
-      'application/vnd.apple.mpegurl'
-    )
-  ){
-
-    video.src = streamUrl;
 
   }else{
 
-    alert('HLS not supported');
+    video.src = streamUrl;
 
   }
 }
